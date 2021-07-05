@@ -1,0 +1,4 @@
+<resources>
+    <string id="AppName">parkrun barcode</string>
+    <string id="athleteId">Athlete ID</string>
+</resources>

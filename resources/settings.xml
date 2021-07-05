@@ -1,0 +1,5 @@
+<settings>
+    <setting propertyKey="@Properties.athleteId" title="@Strings.athleteId">
+        <settingConfig type="numeric" min="0" max="9999999"/>
+    </setting>
+</settings>

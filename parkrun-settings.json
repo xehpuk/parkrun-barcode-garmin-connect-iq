@@ -1,0 +1,25 @@
+{
+  "settings": [{
+      "key": "athleteId",
+      "valueType": "number",
+      "defaultValue": 4027501,
+      "configTitle": "athleteId",
+      "configPrompt": null,
+      "configHelpUrl": null,
+      "configError": null,
+      "configType": "numeric",
+      "configReadonly": false,
+      "configRequired": false,
+      "configOptions": null,
+      "configMin": 0,
+      "configMax": 9999999,
+      "configMaxLength": null
+    }
+  ],
+  "languages": {
+    "valyrian": {
+      "athleteId": "Athlete ID",
+      "AppName": "parkrun barcode"
+    }
+  }
+}
