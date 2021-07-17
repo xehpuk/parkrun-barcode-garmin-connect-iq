@@ -1,1 +1,1 @@
-monkeyc -f ./monkey.jungle -o parkrun.prg -y developer_key.der -w -d fr735xt
+monkeyc -f ./monkey.jungle -o ./bin/parkrun-barcode-garmin-connect-iq.prg -y developer_key.der -w -d fr945

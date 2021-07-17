@@ -1,13 +1,4 @@
-//
-// Copyright 2015-2016 by Garmin Ltd. or its subsidiaries.
-// Subject to Garmin SDK License Agreement and Wearables
-// Application Developer Agreement.
-//
-
-using Toybox.WatchUi as Ui;
-using Toybox.Graphics;
-using Toybox.System;
-using Toybox.Application as App;
+using Toybox.Graphics as Gfx;
 
 const START = 104;
 const STOP = 106;
@@ -122,100 +113,49 @@ const PATTERNS = [
 	[2, 3, 3, 1, 1, 1, 2, 0]   // 106
 ];
 
-const HEIGHT = 50;
-
-class WebRequestView extends Ui.View {
-    hidden var mMessage = "Press menu button";
-    hidden var codes;
-    hidden var image;
-	hidden var _athleteId;
-
-    function initialize(athleteId) {
-        Ui.View.initialize();
-
-		_athleteId = athleteId;
+(:glance)
+function drawBarcodeToBitmap(athleteId, barcodeHeight) {
+    var bytes = athleteId.toUtf8Array();
+    var byteLength = bytes.size();
+    var result = new[byteLength + 3];
+    result[0] = START;
+    for(var i = 0; i < byteLength; i++) {
+        var byte = bytes[i];
+        result[i + 1] = byte >= 32
+			? byte - 32
+			: byte + 64;
     }
-
-    // Load your resources here
-    function onLayout(dc) {
-        image = Ui.loadResource(Rez.Drawables.ParkrunLogo);
-
-        var bytes = _athleteId.toUtf8Array();
-        var size = bytes.size();
-        var result = new[size + 3];
-        result[0] = START;
-        for(var i = 0; i < size; i++) {
-            var byte = bytes[i];
-            result[i + 1] = byte >= 32 ? byte - 32 : byte + 64;
-        }
-        var checksum = START;
-        for (var i = 1; i < size + 1; i++) {
-            checksum += i * result[i];
-        }
-        result[size + 1] = checksum % 103;
-        result[size + 2] = STOP;
-        
-        codes = result;
-        mMessage = bytes.toString() + "\n" + result.toString();
+    var checksum = START;
+    for (var i = 1; i < byteLength + 1; i++) {
+        checksum += i * result[i];
     }
+    result[byteLength + 1] = checksum % 103;
+    result[byteLength + 2] = STOP;
+    
+    var size = result.size();
+    var barcodeWidth = 11 * size + 2;
+	var bmp = new Gfx.BufferedBitmap({
+    	:width => barcodeWidth,
+    	:height => barcodeHeight,
+    	:palette => [Gfx.COLOR_BLACK, Gfx.COLOR_WHITE],
+	});
+	var dc = bmp.getDc();
+    dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_WHITE);
+    dc.clear();
+    var x = dc.getWidth() / 2 - barcodeWidth / 2;
 
-    // Restore the state of the app and prepare the view to be shown
-    function onShow() {
-    }
+    for (var c = 0; c < size; c++) {
+        var code = result[c];
+        var bars = code != STOP ? 6 : 8;
 
-    // Update the view
-    function onUpdate(dc) {
-        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_WHITE);
-        dc.clear();
-        // dc.drawText(dc.getWidth()/2, dc.getHeight()/2, Graphics.FONT_MEDIUM, mMessage, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-        // dc.drawBitmap(dc.getWidth()/2 - image.getWidth()/2, dc.getHeight()/2 - image.getHeight()/2, image);
-        drawLogo(dc);
-        drawBarcode(dc);
-        drawId(dc);
-    }
+        for (var b = 0; b < bars; b += 2) {
+            var barWidth = PATTERNS[code][b];
+            var spaceWidth = PATTERNS[code][b + 1];
 
-    function drawLogo(dc) {
-        dc.drawBitmap(dc.getWidth() / 2 - image.getWidth() / 2, 10, image);
-    }
+            dc.fillRectangle(x, 0, barWidth, barcodeHeight);
 
-    function drawBarcode(dc) {
-        var size = codes.size();
-        var barcodeWidth = 11 * size + 2;
-        var x = dc.getWidth() / 2 - barcodeWidth / 2;
-        var y = dc.getHeight() / 2;
-
-        for (var c = 0; c < codes.size(); c++) {
-            var code = codes[c];
-            var bars = code != STOP ? 6 : 8;
-
-            for (var b = 0; b < bars; b += 2) {
-                var barWidth = PATTERNS[code][b];
-                var spaceWidth = PATTERNS[code][b + 1];
-
-                dc.fillRectangle(x, y, barWidth, HEIGHT);
-
-                x += barWidth + spaceWidth;
-            }
+            x += barWidth + spaceWidth;
         }
     }
-
-    function drawId(dc) {
-        var y = dc.getHeight() / 2 + HEIGHT;
-        dc.drawText(dc.getWidth() / 2, y, Graphics.FONT_SYSTEM_LARGE, _athleteId, Graphics.TEXT_JUSTIFY_CENTER);
-    }
-
-    // Called when this View is removed from the screen. Save the
-    // state of your app here.
-    function onHide() {
-    }
-
-    function onReceive(args) {
-        if (args instanceof Lang.String) {
-            mMessage = args;
-        }
-        else if (args instanceof Ui.BitmapResource) {
-            image = args;
-        }
-        Ui.requestUpdate();
-    }
+    return bmp;
 }
