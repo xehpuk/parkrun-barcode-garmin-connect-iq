@@ -1,4 +1,4 @@
 <resources>
-    <bitmap id="LauncherIcon" filename="images/icon.png" />
-    <bitmap id="ParkrunLogo" filename="images/parkrun-logo.png" />
+    <bitmap id="LauncherIcon" filename="images/launcher-icon.png"/>
+    <bitmap id="ParkrunLogo" filename="images/parkrun-logo.png"/>
 </resources>
