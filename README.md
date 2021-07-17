@@ -1,6 +1,12 @@
 # parkrun Barcode Widget on Garmin Connect IQ
 
+## Standard
+
 ![parkrun barcode widget of athlete A4027501 on Forerunner 735XT](./showcase.jpg)
+
+## Glance
+
+![parkrun barcode widget glance of athlete A4027501 on Forerunner 945](./showcase_glance.jpg)
 
 DFYB!
 
