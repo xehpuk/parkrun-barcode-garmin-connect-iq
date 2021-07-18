@@ -1,33 +1,45 @@
-using Toybox.WatchUi as Ui;
+using Toybox.Application as App;
 using Toybox.Graphics as Gfx;
 using Toybox.System;
-using Toybox.Application as App;
+using Toybox.WatchUi as Ui;
 
 const BARCODE_HEIGHT = 50;
 const LOGO_OFFSET = 10;
 
 class ParkrunView extends Ui.View {
-	private var _barcodeBmp;
+    private var _barcodeBmp;
     private var _logo;
-	private var _athleteId;
+    private var _athleteId;
 
     function initialize(athleteId) {
         Ui.View.initialize();
 
-		_athleteId = athleteId;
+        _athleteId = athleteId;
     }
 
     function onLayout(dc) {
         _logo = Ui.loadResource(Rez.Drawables.ParkrunLogo);
-        _barcodeBmp = drawBarcodeToBitmap(_athleteId, BARCODE_HEIGHT);
+        refreshBarcode();
+    }
+
+    function onShow() {
+        var athleteId = "A" + App.Properties.getValue(ATHLETE_ID);
+        if (_athleteId != athleteId) {
+            _athleteId = athleteId;
+            refreshBarcode();
+        }
     }
 
     function onUpdate(dc) {
-    	dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_WHITE);
-    	dc.clear();
-    	drawLogo(dc);
+        dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_WHITE);
+        dc.clear();
+        drawLogo(dc);
         drawBarcode(dc);
         drawId(dc);
+    }
+
+    function refreshBarcode() {
+        _barcodeBmp = drawBarcodeToBitmap(_athleteId, BARCODE_HEIGHT);
     }
 
     function drawLogo(dc) {
