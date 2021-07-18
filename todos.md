@@ -1,6 +1,6 @@
 - [x] Barcode auf Uhr generieren (C# übersetzen)
 - [ ] ID über Garmin Connect Mobile / Express eingeben (Settings)
-- [ ] ID auf Uhr eingeben (Picker / PickerFactory / PickerDelegate)
+- [x] ID auf Uhr eingeben (Picker / PickerFactory / PickerDelegate)
 - [x] parkrun-Logo einbauen
 - [x] ID unter Barcode anzeigen
 - [ ] Zweite Seite für Name, ICE
